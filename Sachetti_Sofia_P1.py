@@ -86,14 +86,64 @@ while control_menu:
 
     elif opcion == "2":
         print("--- CARGA DE EXISTENCIAS ---")
+        # Primero verifico que la lista de herramientas no esté vacía
+        if not herramientas: print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+        else:
+            existencias.clear() # Limpio la lista de existencias 
+            for i in range(0, len(herramientas)): # Recorro la lista de herramientas 
+                herramienta = herramientas[i] # Por cada una de ellas, voy a ingresar una cantidad
+                cantidad = 0 # Inicializo variable de control en 0
+                while cantidad <= 0:
+                    print(f"Agregar existencia para {herramienta}.")
+                    cantidad = input("Cantidad: ")
+                
+                    if not cantidad.isdigit():
+                        print("Número inválido. Intente nuevamente.") # REVISAR 
+                    else:
+                        cantidad = int(cantidad)
+                existencias.append(cantidad)
+                print(herramientas)
+                print(existencias)
+        
     elif opcion == "3":
         print("--- VER INVENTARIO ---")
+        if not herramientas: print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+        for i in range(0, len(herramientas)):
+            print(f"{herramientas[i]} - Stock: {existencias[i]}")
     elif opcion == "4":
         print("--- CONSULTA DE STOCK ---")
+        nombre_buscado = input("Ingrese la herramienta a consultar: ").capitalize()
+        encontrada = False
+        for i in range(0, len(herramientas)):
+            if herramientas[i] == nombre_buscado:
+                print(f"Existencias de {herramientas[i]}: {existencias[i]}")
+                encontrada = True
+                break
+        if encontrada == False:
+            print("La herramienta buscada no se encuntra en el inventario.")
     elif opcion == "5":
         print("--- REPORTE DE AGOTADOS ---")
+        agotados = False
+        for i in range(0, len(existencias)):
+            if existencias[i] == 0:
+                print(f"La herramienta {herramientas[i]} está agotada.")
+                agotados = True
+        if agotados == False:
+            print("Actualmente todos los productos están en stock.")
     elif opcion == "6":
         print("--- ALTA DE NUEVO PRODUCTO ---")
+        nuevo_producto = input("Igrese el nombre de la herramienta: ").capitalize()
+        if not nuevo_producto.isalpha():
+            print("Error. No puede ingresar un nombre vacío.")
+        elif nuevo_producto in herramientas:
+            print("El producto ingresado ya está en el listado.")
+        else:
+            cantidad = input("Ingrese la cantidad del nuevo producto: ")
+            if not cantidad.isdigit():
+                print("La cantidad debe ser un numero entero.")
+            else:
+                herramientas.append(nuevo_producto)
+                existencias.append(int(cantidad))
     elif opcion == "7":
         print("--- ACTUALIZAR STOCK ---")
     elif opcion == "8":
