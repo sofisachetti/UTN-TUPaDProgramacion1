@@ -1,34 +1,3 @@
-# El programa debe presentar un menú interactivo persistente con las siguientes opciones: MENU - LISTO
-
-# 1. Carga Inicial de Herramientas: Registrar los nombres de las herramientas que se
-# pondrán a la venta. Se debe preguntar al usuario la cantidad de herramientas a cargar
-# y se debe usar una estructura pertinente. En caso de nombre vacío o duplicado se
-# debe seguir pidiendo hasta que sea correcto respetando la cantidad de herramientas
-# que el usuario indicó antes de la carga.  LISTO
-
-# 2. Carga de Existencias: Ingresar la cantidad de unidades para cada herramienta
-# registrada previamente, respetando el orden de ingreso. Cuando el usuario ingresa
-# existencias, el sistema debe mostrar por pantalla el nombre de la herramienta.
-
-# 3. Visualización de Inventario: Mostrar el listado completo de herramientas junto a su
-# stock actual.
-
-# 4. Consulta de Stock (existencias): Buscar una herramienta por su nombre y mostrar
-# cuántas unidades hay disponibles.
-
-# 5. Reporte de Agotados: Listar únicamente aquellos productos cuyo stock sea igual a
-# cero.
-
-# 6. Alta de Nuevo Producto: Permitir agregar solo una nueva herramienta al final de las
-# listas con su stock inicial. En caso de nombre vacío, nombre duplicado o valor de
-# existencia negativo se debe volver al menú principal mostrando por pantalla el motivo
-
-# 7. Actualización de Stock (Venta/Ingreso):
-# o Venta: Disminuir el stock tras validar que hay unidades suficientes.
-# o Ingreso: Aumentar el stock por reposición de mercadería.
-
-# 8. Salir: Finalizar la ejecución del sistema. FINALIZAR EJECUCION - LISTO
-
 # Inicialización de listas, ambas tienen que estar relacionadas entre sí.
 herramientas = []
 existencias = []
@@ -51,14 +20,14 @@ while control_menu:
     print("8- Salir")
     opcion = input("Ingrese su opción: ")
     
-    # Validación del input: si la opcion no es un numero devuelve un mensaje de error 
+    # Validación del input: si la opcion no es un número devuelve un mensaje de error 
     if not opcion.isdigit(): 
         print("\nError. Debe ingresar una opción numérica.")
         continue # Para que vuelva al menu principal y siga el bucle
     
-    # Manejo de las opciones del menu con condicional
+    # Manejo de las opciones del menu con condicional if - elif
     if opcion == "1":
-        print("--- CARGA DE HERRAMIENTAS ---")
+        print("\n--- CARGA DE HERRAMIENTAS ---")
         
         # Pido la cantidad de herramientas e inicializo un contador de las mismas en 0 para el bucle
         cantidad_herramientas = input("Ingrese la cantidad de herramientas para cargar en el sistema: ")
@@ -67,85 +36,149 @@ while control_menu:
         # Verifico que la cantidad de herramientas ingresada sea en formato numerico
         if not cantidad_herramientas.isdigit():
             print("Error: debe ingresar la cantidad de herramientas en forma numérica.")
+            continue
         else:
             cantidad_herramientas = int(cantidad_herramientas) # Transformo el string en un numero entero
         
         # Mientras el contador sea menor a la cantidad de herramientas a ingresar
         while contador < cantidad_herramientas:
-            nombre_herramienta = input("Ingrese el nombre de la herramienta: ").capitalize()
+            nombre_herramienta = input(f"Ingrese el nombre de la herramienta {contador + 1}: ").capitalize()
             
             # Valido que el nombre ingresado no sea un string vacio
             if not nombre_herramienta.isalpha():
-                print("Error. No puede ingresar un nobre vacio.")
-            elif nombre_herramienta in herramientas:
+                print("Error. No puede ingresar un nobre vacio o numérico.")
+            elif nombre_herramienta in herramientas: # Valido que la herramienta no esté repetida
                 print("La herramienta ingresada ya se encuentra dentro del inventario.")
-            else:
+            else: # Si cumple con las condiciones, la agrego a la lista de herramientas y sumo el contador
                 herramientas.append(nombre_herramienta)
                 contador += 1
-        print(herramientas)
-
+        
+        # Muestro en pantalla la lista final de herramientas
+        print("\nLista de herramientas completa: ")
+        for i in herramientas:
+            print(i)
+    
     elif opcion == "2":
-        print("--- CARGA DE EXISTENCIAS ---")
+        print("\n--- CARGA DE EXISTENCIAS ---")
+        
         # Primero verifico que la lista de herramientas no esté vacía
-        if not herramientas: print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+        if not herramientas: 
+            print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
         else:
-            existencias.clear() # Limpio la lista de existencias 
+            existencias.clear() # Limpio la lista de existencias, me va a pedir cargar nuevamente una por una
+            
             for i in range(0, len(herramientas)): # Recorro la lista de herramientas 
-                herramienta = herramientas[i] # Por cada una de ellas, voy a ingresar una cantidad
-                cantidad = 0 # Inicializo variable de control en 0
-                while cantidad <= 0:
-                    print(f"Agregar existencia para {herramienta}.")
-                    cantidad = input("Cantidad: ")
+                while True: 
+                    print(f"Agregar existencia para {herramientas[i]}.") # Muestro la herramienta
+                    cantidad = input("Cantidad: ") # Pido al usuario la cantidad
                 
-                    if not cantidad.isdigit():
-                        print("Número inválido. Intente nuevamente.") # REVISAR 
-                    else:
-                        cantidad = int(cantidad)
-                existencias.append(cantidad)
-                print(herramientas)
-                print(existencias)
+                    if not cantidad.isdigit() or int(cantidad) < 0: # Si la cantidad no es un numero o es menor a o devuelve error
+                        print("Número inválido. Intente nuevamente.") 
+                        continue
+                    else: 
+                        cantidad = int(cantidad) # Pasamos la cantidad a numero entero
+                        existencias.append(cantidad) # La agregamos a la lista de existencias
+                        break # Terminamos el bucle para que pase al proximo elemento de la lista
         
     elif opcion == "3":
-        print("--- VER INVENTARIO ---")
-        if not herramientas: print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+        print("\n--- VER INVENTARIO ---")
+        
+        # Primero verifico que la lista de herramientas no esté vacía
+        if not herramientas: 
+            print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+        
+        # Imprimo las herramientas y su stock correspondiente
         for i in range(0, len(herramientas)):
-            print(f"{herramientas[i]} - Stock: {existencias[i]}")
+            print(f"{i + 1}- {herramientas[i]} - Stock: {existencias[i]}")
+    
     elif opcion == "4":
-        print("--- CONSULTA DE STOCK ---")
-        nombre_buscado = input("Ingrese la herramienta a consultar: ").capitalize()
-        encontrada = False
+        print("\n--- CONSULTA DE STOCK ---")
+        
+        if not herramientas: # Primero verifico si el listado de herramientas está vacio
+            print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+            continue
+
+        nombre_buscado = input("Ingrese la herramienta a consultar: ").capitalize() # Pido nombre de la herramienta a buscar
+        encontrada = False # Estado para saber si se encontro o no
+        
+        # Recorro el array de herramientas
         for i in range(0, len(herramientas)):
-            if herramientas[i] == nombre_buscado:
+            if herramientas[i] == nombre_buscado: # Si el nombre buscado coincide con alguno de los nombres almacenados lo muestro
                 print(f"Existencias de {herramientas[i]}: {existencias[i]}")
                 encontrada = True
-                break
-        if encontrada == False:
+                break # Si lo encuentra cierro el ciclo for
+        
+        if encontrada == False: # Si no lo encuentra muestro un mensaje de error. 
             print("La herramienta buscada no se encuntra en el inventario.")
+    
     elif opcion == "5":
-        print("--- REPORTE DE AGOTADOS ---")
+        print("\n--- REPORTE DE AGOTADOS ---")
+        
+        if not herramientas: # Si la lista de herramientas esta vacia imprimo el mensaje en la consola
+            print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
+
         agotados = False
-        for i in range(0, len(existencias)):
-            if existencias[i] == 0:
+        for i in range(0, len(existencias)): # Recorro la lista de existencias con un bucle for
+            if existencias[i] == 0: # Si encuentro alguna existencia en 0 lo imprimo en la consola
                 print(f"La herramienta {herramientas[i]} está agotada.")
                 agotados = True
-        if agotados == False:
-            print("Actualmente todos los productos están en stock.")
+                continue
+            elif agotados == False: # Si en ningun momento se cambia a False, es que no hay ningun elemento agotado
+                print("Actualmente todos los productos están en stock.")
+
     elif opcion == "6":
-        print("--- ALTA DE NUEVO PRODUCTO ---")
-        nuevo_producto = input("Igrese el nombre de la herramienta: ").capitalize()
-        if not nuevo_producto.isalpha():
-            print("Error. No puede ingresar un nombre vacío.")
-        elif nuevo_producto in herramientas:
-            print("El producto ingresado ya está en el listado.")
-        else:
-            cantidad = input("Ingrese la cantidad del nuevo producto: ")
-            if not cantidad.isdigit():
-                print("La cantidad debe ser un numero entero.")
+        print("\n--- ALTA DE NUEVO PRODUCTO ---")
+        
+        while True: # Esta en un bucle para manejar los errores sin que vuelva al menu inicial
+            nuevo_producto = input("Igrese el nombre de la herramienta: ").capitalize() # Pido el nombre del prodcuto
+            if not nuevo_producto.isalpha(): # Verifico que sea un string
+                print("Error. No puede ingresar un nombre vacío.")
+            elif nuevo_producto in herramientas: # Verifico que no est repetido
+                print("El producto ingresado ya está en el listado.")
             else:
-                herramientas.append(nuevo_producto)
-                existencias.append(int(cantidad))
+                cantidad = input("Ingrese la cantidad del nuevo producto: ") # Pido cantidad para las existencias
+                if not cantidad.isdigit(): # Si no es numero 
+                    print("Error. La cantidad debe ser un numero entero.")
+                else: # Si cumple con las condiciones, agrego a lista de herramientas y de existencias
+                    herramientas.append(nuevo_producto)
+                    existencias.append(int(cantidad))
+                    break # Termino el ciclo while
+    
     elif opcion == "7":
-        print("--- ACTUALIZAR STOCK ---")
+        print("\n--- ACTUALIZAR STOCK ---")
+        
+        # Opciones disponibles
+        print("1- Venta")
+        print("2- Reposicion")
+        opcion = int(input("Seleccione la opcion: "))
+        
+        herramienta_actualizar = input("\nIngrese el nombre de la herramienta a actualizar: ").capitalize()
+        encontrada = False
+        
+        for i in range(0, len(herramientas)): # Recorro la lista de herramientas
+            if herramientas[i] == herramienta_actualizar: # Si coinciden en nombre, dependiendo de la opcion hago los cambios
+                encontrada = True
+                if opcion == 1:
+                    cantidad = int(input("Ingrese la cantidad vendida: ")) # Pido la cantidad vendida
+                    if cantidad > existencias[i]: # Verifico que las existencias disponibles sean suficientes
+                        print("El stock disponible no es suficiente para realizar la venta.")
+                    else:
+                        existencias[i] = existencias[i] - cantidad # Actualizo el stock
+                elif opcion == 2:
+                    cantidad = int(input("Ingrese la cantidad a reponer: ")) # Pido la cantidad a reponer
+                    if cantidad < 0: # Verifico que la cantidad sea mayor a 0
+                        print("La cantidad ingresada debe ser un numero positivo.")
+                    else: # Modifico la cantidad de existencias de esa herramienta
+                        existencias[i] = existencias[i] + cantidad
+        
+        if encontrada == False: # Si no la encuentra por nombre imprimo un mensaje en pantalla
+            print("No se encontró la herramienta seleccionada.")
+    
     elif opcion == "8":
-        print("--- SALIR ---")
-        control_menu = False
+        print("\n--- SALIR ---")
+        print("Cerrando sistema... ")
+        control_menu = False # Paso el controlador del menú a False para cerrar el bucle while
+    
+    # Else para manejar error si el usuario ingresa una opción inválida
+    else:
+        print("Opción inválida. Intente nuevamente.")
