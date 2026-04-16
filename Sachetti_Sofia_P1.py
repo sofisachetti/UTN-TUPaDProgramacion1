@@ -84,7 +84,6 @@ while control_menu:
                         break # Terminamos el bucle para que pase al proximo elemento de la lista
         
         # Muestro en pantalla la lista final de herramientas
-        print("\nLista de herramientas y existencias: ")
         for i in range(0, len(herramientas)):
             print(f"{herramientas[i]} - {existencias[i]}")
         
@@ -125,7 +124,7 @@ while control_menu:
         if not herramientas: # Si la lista de herramientas esta vacia imprimo el mensaje en la consola
             print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
 
-        for i in range(0, len(existencias)): # Recorro la lista de existencias con un bucle for
+        for i in existencias: # Recorro la lista de existencias con un bucle for
             agotados = False
             if existencias[i] == 0: # Si encuentro alguna existencia en 0 lo imprimo en la consola
                 print(f"La herramienta {herramientas[i]} está agotada.")
