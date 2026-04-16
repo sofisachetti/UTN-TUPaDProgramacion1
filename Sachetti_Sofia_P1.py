@@ -123,16 +123,18 @@ while control_menu:
         
         if not herramientas: # Si la lista de herramientas esta vacia imprimo el mensaje en la consola
             print("El listado de herramientas está vacío. \nIngrese a la opción 1 para carga de herramientas.")
-
-        for i in existencias: # Recorro la lista de existencias con un bucle for
-            agotados = False
-            if existencias[i] == 0: # Si encuentro alguna existencia en 0 lo imprimo en la consola
-                print(f"La herramienta {herramientas[i]} está agotada.")
-                agotados = True
-                break
-            elif agotados == False: # Si en ningun momento se cambia a False, es que no hay ningun elemento agotado
+        else:
+            agotados = []
+            
+            for i in range(len(existencias)): # Recorro la lista de existencias con un bucle for
+                if existencias[i] == 0: # Si encuentro alguna existencia en 0 lo imprimo en la consola
+                    agotados.append(herramientas[i])
+            if len(agotados) > 0:
+                for a in agotados:
+                    print(f"La herramienta {a} está agotada.")
+            else: # Si en ningun momento se cambia a False, es que no hay ningun elemento agotado
                 print("Actualmente todos los productos están en stock.")
-                break
+                    
 
     elif opcion == "6":
         print("\n--- ALTA DE NUEVO PRODUCTO ---")
