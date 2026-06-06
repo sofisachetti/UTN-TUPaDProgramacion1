@@ -122,6 +122,26 @@ def mostrar_inventario(inventario):
         print("-" * 40)
         print(f"Total de productos: {len(inventario)}")
 
+
+# ---------------------------------------------------------------------------------------------------------------
+# Funcion consultar_stock() para la opción 3
+# Busca una herramienta por nombre y muestra su stock, recibe como parametro el inventario
+def consultar_stock(inventario):
+    if inventario_vacio(inventario):  # Verifico que el inventario no este vacio
+        return
+    else:
+        nombre = input("\nIngrese el nombre de la herramienta a consultar: ")
+        nombre = nombre_normalizado(nombre) # normalizo el nombre qu eingresa el usuario para que coincida con el formato almacenado
+
+        for i in inventario:  # Recorro con bucle for, si el nombre almacenado coincide con el ingresado lo imprimo en consola
+            if i["herramienta"] == nombre:  
+                print(f"\n'{i['herramienta']}' — Stock disponible: {i['cantidad']} unidades.")
+                return
+        # Si la herramienta no se encuentra, se da aviso
+        print(f"\nLa herramienta '{nombre}' no se encuentra en el catálogo.")
+
+
+
 inventario = [{"herramienta": "martillo", "cantidad": 15}, {"herramienta": "pinza", "cantidad": 10},{"herramienta": "clavos", "cantidad": 1500}]
 
-mostrar_inventario(inventario)
+consultar_stock(inventario)
