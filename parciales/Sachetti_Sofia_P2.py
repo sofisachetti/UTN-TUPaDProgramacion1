@@ -16,6 +16,7 @@ def menu():
     print("6- Venta / Ingreso")
     print("7- Salir")
 
+
 # Funcion auxiliar nombre_normalizado():
 # Recibe como parámetro el nombre de una herramienta y lo pasa a un formato normalizado
 # Su funcion es que todos los nombres queden almaccenados de la misma forma
@@ -33,6 +34,7 @@ def herramienta_existe(inventario, nombre):
         if item["herramienta"].strip().lower() == nombre:
             return True # Si la herramienta ya existe retorna True, sino False
     return False
+
 
 # Funcion auxiliar verificar_inventario(): para corroborar si el inventario tiene herramientas cargadas o está vacio.
 def inventario_vacio(inventario):
@@ -135,13 +137,37 @@ def consultar_stock(inventario):
 
         for i in inventario:  # Recorro con bucle for, si el nombre almacenado coincide con el ingresado lo imprimo en consola
             if i["herramienta"] == nombre:  
-                print(f"\n'{i['herramienta']}' — Stock disponible: {i['cantidad']} unidades.")
+                print(f"\n'{i['herramienta']}' - Stock disponible: {i['cantidad']} unidades.")
                 return
         # Si la herramienta no se encuentra, se da aviso
         print(f"\nLa herramienta '{nombre}' no se encuentra en el catálogo.")
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# Funcion reporte_agotados para la opcion 4
+# Recibe como parametro el inventario y devuelve las herramientas que tengan como cantidad 0.
+def reporte_agotados(inventario):
+    if inventario_vacio(inventario):  # Verifico si el inventario esta vacio
+        return
+    else:
+        agotados = []   # inicializo variable para almacenar los productos agotados si hay
+        for item in inventario:
+            if item["cantidad"] == 0: # recorro con bucle for, si en "cantidad" alguno tiene 0, lo almaceno en el array de agotados
+                agotados.append(item)
 
-inventario = [{"herramienta": "martillo", "cantidad": 15}, {"herramienta": "pinza", "cantidad": 10},{"herramienta": "clavos", "cantidad": 1500}]
+        if len(agotados) == 0:   # Si el array de agotados está en 0, significa que no hay herramientas agotadas
+            print("\nNo hay productos agotados.")
+            return
 
-consultar_stock(inventario)
+        print("\n------- PRODUCTOS AGOTADOS -------")  # Sino, imprimo el reporte mostrando las herramientas agotadas
+        for item in agotados:
+            print(f"- {item['herramienta']}")
+        print(f"\nTotal agotados: {len(agotados)}")
+
+
+
+
+
+inventario = [{"herramienta": "martillo", "cantidad": 10}, {"herramienta": "pinza", "cantidad": 10},{"herramienta": "clavos", "cantidad": 1500}]
+
+reporte_agotados(inventario)
