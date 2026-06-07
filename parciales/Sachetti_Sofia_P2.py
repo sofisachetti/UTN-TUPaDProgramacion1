@@ -3,20 +3,6 @@
 # Alumna: Sofía Sachetti
 
 
-# Función menu(): 
-# solamente imprime las opciones que hay disponibles.
-def menu():
-    print("\n------ SISTEMA DE CONTROL DE INVENTARIO ------")
-    print("\nMenú de opciones: ")
-    print("1- Carga incial de herramientas")
-    print("2- Ver inventario")
-    print("3- Consultar stock")
-    print("4- Reporte de agotados")
-    print("5- Alta d enuevo producto")
-    print("6- Venta / Ingreso")
-    print("7- Salir")
-
-
 # Funcion auxiliar nombre_normalizado():
 # Recibe como parámetro el nombre de una herramienta y lo pasa a un formato normalizado
 # Su funcion es que todos los nombres queden almaccenados de la misma forma
@@ -82,7 +68,7 @@ def cargar_herramientas(inventario):
                 if nombre.strip() == "": # Verifica que no sea nombre vacio
                     raise ValueError("El nombre no puede estar vacío. Intente nuevamente.")
                 if not nombre.isalpha():  # Verifica que sea un string de letras
-                    raise ValueError("El nombre debe ser una cadena de caracteres.")
+                    raise ValueError("El nombre debe ser una cadena de caracteres. Intente nuevamente.")
                 if herramienta_existe(inventario, nombre): # Verifica si la herramienta existe en el inventario
                     raise ValueError(f"Ya existe una herramienta con ese nombre. Intente nuevamente.")
                 nombre_valido = True
@@ -97,7 +83,7 @@ def cargar_herramientas(inventario):
             try:
                 stock = int(input(f"Ingrese el stock inicial - Herramienta {cargadas + 1}: "))
                 if stock <= 0: # Valido que el num ingresado sea positivo
-                    raise ValueError("El stock inicial no puede ser negativo.")
+                    raise ValueError("El stock inicial no puede ser negativo o cero. intente nuevamente.")
                 stock_valido = True
             except ValueError as e:
                 print(f"Error: {e}")
@@ -118,9 +104,9 @@ def mostrar_inventario(inventario):
     if inventario_vacio(inventario): # Verifica si el inventario está vacio
         return
     else:
-        print(" --------  INVENTARIO COMPLETO  -------- ")   # Recorro el inventario con un bucle for 
+        print("\n --------  INVENTARIO COMPLETO  -------- ")   # Recorro el inventario con un bucle for 
         for i in range(len(inventario)):
-            print(f"{i} - {inventario[i]['herramienta']} - {inventario[i]['cantidad']}")
+            print(f"{i + 1} - {inventario[i]['herramienta']} - {inventario[i]['cantidad']}")
         print("-" * 40)
         print(f"Total de productos: {len(inventario)}")
 
@@ -165,9 +151,137 @@ def reporte_agotados(inventario):
         print(f"\nTotal agotados: {len(agotados)}")
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# Funcion alta_producto() para opcion 5
+# Agrega una herramienta nueva al inventario
+# Si hay algún error de validación, informa y vuelve al menú
+# Retorna el inventario actualizado
+def alta_producto(inventario):
+    try:
+        nombre = input("\nNombre de la nueva herramienta: ")
+        nombre = nombre_normalizado(nombre) # normalizo el nombre para que ingrese de la misma forma que esta almacenado
+        if nombre == "":
+            raise ValueError("El nombre no puede estar vacío.")
+        if herramienta_existe(inventario, nombre):
+            raise ValueError(f"Ya existe una herramienta llamada '{nombre}' en el stock.")
+
+        # Validaciones del stock
+        stock = int(input("Stock inicial: "))
+        if stock <= 0:
+            raise ValueError("El stock inicial no puede ser negativo o cero.")
+
+        inventario.append({"herramienta": nombre.strip(), "cantidad": stock})
+        print(f"\n✓ '{nombre.strip()}' agregada con {stock} unidades.")
+    # Si hay error, vuelve al menu princiapl
+    except ValueError as e:
+        print(f"\nError: {e}")
+        print("Volviendo al menú principal sin agregar el producto.")
+
+    return inventario
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# Funcion actualizar_stock() para la opcion 6
+# Recibe de parametro el inventario. Registra una venta o actualiza el stock actual
+def actualizar_stock(inventario):
+    nombre = input("\nIngrese el nombre de la herramienta: ")  # Pido nombre de herramienta y normalizo la entrada
+    nombre = nombre_normalizado(nombre)
 
-inventario = [{"herramienta": "martillo", "cantidad": 10}, {"herramienta": "pinza", "cantidad": 10},{"herramienta": "clavos", "cantidad": 1500}]
+    # Busco la herramienta en el inventario
+    indice = -1
+    for i in range(len(inventario)):
+        if inventario[i]["herramienta"] == nombre:
+            indice = i
+            break
+    # Si no encuentra la herramienta, aviso al usuario
+    if indice == -1:
+        print(f"\nLa herramienta '{nombre}' no se encuentra en el stock.")
+        return inventario
 
-reporte_agotados(inventario)
+    herramienta = inventario[indice]  # Muestro la info actual de la herramienta y le pregunto al usuario que accion hacer
+    print(f"\nHerramienta: {herramienta['herramienta']}")
+    print(f"Stock actual: {herramienta['cantidad']} unidades")
+    print("\n¿Qué operación desea realizar?")
+    print("1. Venta")
+    print("2. Ingreso")
+
+    try:
+        opcion = int(input("\nSeleccione 1 o 2: "))
+        if opcion not in [1, 2]: # Si la opcion del usuario no es 1 o 2, muestro error y vuelvo al menu
+            raise ValueError("Opción inválida. Debe ser 1 (Venta) o 2 (Ingreso). Volviendo al menú principal.")
+
+        cantidad = int(input("Cantidad: "))  # Le pido que ingrese la cantidad a vender o actualizar
+        if cantidad <= 0:
+            raise ValueError("La cantidad debe ser un entero mayor que cero.")
+
+        if opcion == 1:
+            # Venta: verifico que el stock sea correcto para hacer la venta
+            if cantidad > herramienta["cantidad"]:
+                raise ValueError(f"Stock insuficiente. Disponible: {herramienta['cantidad']} unidades.")
+            inventario[indice]["cantidad"] -= cantidad
+            print(f"\nVenta registrada. Stock actualizado: {inventario[indice]['cantidad']} unidades.")
+
+        else:
+            # Ingreso: sumo la cantidad ingresada a la cantidad almacenada
+            inventario[indice]["cantidad"] += cantidad
+            print(f"\nIngreso registrado. Stock actualizado: {inventario[indice]['cantidad']} unidades.")
+
+    except ValueError as e:
+        print(f"\nError: {e}")
+
+    return inventario
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Funcion menu()
+# Maneja la logica principal del sistema
+# Dentro de ella se define el inventario y con le bucle while se maneja el flujo
+def menu():
+    inventario = []
+    opcion = 0
+
+    while True:
+        
+        print("\n------ SISTEMA DE CONTROL DE INVENTARIO ------")
+        print("\nMenú de opciones: ")
+        print("1- Carga incial de herramientas")
+        print("2- Ver inventario")
+        print("3- Consultar stock")
+        print("4- Reporte de agotados")
+        print("5- Alta de nuevo producto")
+        print("6- Venta / Ingreso")
+        print("7- Salir")
+        
+        try:
+            opcion = int(input("\nSeleccione una opción: "))
+
+            if opcion == 1:
+                print("\n------- CARGA INICIAL DE STOCK -------")
+                inventario = cargar_herramientas(inventario)
+            elif opcion == 2:
+                print("\n------- VER INVENTARIO -------")
+                mostrar_inventario(inventario)
+            elif opcion == 3:
+                print("\n------- CONSULTA DE STOCK -------")
+                consultar_stock(inventario)
+            elif opcion == 4:
+                print("\n------- REPORTE DE AGOTADOS -------")
+                reporte_agotados(inventario)
+            elif opcion == 5:
+                print("\n------- ALTA NUEVO PRODUCTO -------")
+                inventario = alta_producto(inventario)
+            elif opcion == 6:
+                print("\n------- VENTA / INGRESO -------")
+                inventario = actualizar_stock(inventario)
+            elif opcion == 7:
+                print("\nCerrando el sistema... ¡Hasta pronto!\n")
+                break
+            else:
+                raise ValueError("La opción debe estar entre 1 y 7.")
+
+        except ValueError as e:
+            print(f"\nOpción inválida: {e}")
+            opcion = 0
+
+
+menu()
