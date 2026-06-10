@@ -38,7 +38,7 @@ def cargar_herramientas(inventario):
     
     # Acá se hace la verificación incial para saber si el inventario está vacío.
     # Si el inventario ya tiene herramientas cargadas, avisa que se debe usar la opción 5.
-    if not inventario_vacio(inventario): 
+    if len(inventario) != 0: 
         print("\nEl inventario ya tiene herramientas cargadas.")
         print("Para agregar nuevos productos o actualizar stock, elija la opción 5.")
         return inventario
