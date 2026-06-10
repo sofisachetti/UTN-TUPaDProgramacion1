@@ -171,7 +171,7 @@ def alta_producto(inventario):
             raise ValueError("El stock inicial no puede ser negativo o cero.")
 
         inventario.append({"herramienta": nombre.strip(), "cantidad": stock})
-        print(f"\n✓ '{nombre.strip()}' agregada con {stock} unidades.")
+        print(f"\nHerrmienta '{nombre.strip()}' agregada con {stock} unidades.")
     # Si hay error, vuelve al menu princiapl
     except ValueError as e:
         print(f"\nError: {e}")
