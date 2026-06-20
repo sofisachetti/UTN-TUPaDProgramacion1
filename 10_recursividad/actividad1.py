@@ -4,12 +4,6 @@ función para calcular y mostrar en pantalla el factorial de todos los números 
 entre 1 y el número que indique el usuario.
 '''
 
-# ejemplos
-# factorial de 5 = 5 x 4 x 3 x 2 x 1 = 120  ->  la recursividad la veo en 5x4 | 4x3 | 3x2 | 2x1 
-# factorial de 4 = 4 x 3 x 2 x 1 = 24
-# factorial de 3 = 3 x 2 x 1 = 6
-# cuando se llega a 1x1 = 1 y 1x0 = 1  -> es el caso base y se corta ahí
-
 def factorial(num):
     if num == 1:   # acá defino el caso base
         return 1
